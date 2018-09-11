@@ -1,7 +1,9 @@
 #### general
 
-- The buttons you see to quickly change the note type are defined by "model_button_rows"
-- The buttons you see to quickly change the deck are defined by "deck_button_rows"
+The buttons you see to quickly change 
+
+- ... the note type are defined by "model_button_rows"
+- ... the deck are defined by "deck_button_rows"
 
 #### Details
 
@@ -13,10 +15,10 @@
       exist already.
     - shortcut (optional): the shortcut key
 - Closely follow the examples. Use the correct symbols like brackets, curly braces, etc.
-
+- The examples from this readme might not be shown properly in the config window of Anki. To see the examples with proper 
+  line breaks have a look at the site on AnkiWeb or on Github.
 
 #### example with one row 
-
 
 ```
 {
