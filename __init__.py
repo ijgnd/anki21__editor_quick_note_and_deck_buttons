@@ -1,5 +1,3 @@
-# -*- mode: Python ; coding: utf-8 -*-
-#
 # provisional update for 2.1 by ijgnd from 2018
 #
 # original comments:
@@ -25,6 +23,7 @@ from PyQt5.QtWidgets import QHBoxLayout, QPushButton, QShortcut, QVBoxLayout
 from PyQt5.QtGui import QKeySequence
 
 from aqt import mw
+from aqt.qt import *
 from aqt.modelchooser import ModelChooser
 from aqt.deckchooser import DeckChooser
 from aqt.utils import tooltip
@@ -41,7 +40,7 @@ def load_config(conf):
     global config
     config=conf
 
-load_config( mw.addonManager.getConfig(__name__))
+load_config(mw.addonManager.getConfig(__name__))
 mw.addonManager.setConfigUpdatedAction(__name__,load_config) 
 
 
@@ -85,13 +84,13 @@ def setup_buttons(chooser, rows, text, do_function):
             l = lambda _=None, s=chooser, nn=button_item["name"]: do_function(
                 s, nn)
             try:
-                    sc = _(button_item["shortcut"])
-                    s = QShortcut(QKeySequence(sc), chooser.widget)
-                    tt += "<br>({})".format(sc)
+                sc = _(button_item["shortcut"])
+                s = QShortcut(QKeySequence(sc), chooser.widget)
+                tt += "<br>({})".format(sc)
             except KeyError:
                 pass
             else:
-                    s.activated.connect(l)
+                s.activated.connect(l)
             if isMac:
                 b.setStyleSheet("padding: 5px; padding-right: 7px;")
                 b.setToolTip(tt)
