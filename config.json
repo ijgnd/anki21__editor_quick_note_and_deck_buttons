@@ -2,14 +2,14 @@
     "model_button_rows": [
         [
             {
-                "label": "C",
+                "label": "B",
                 "shortcut": "Ctrl+1",
-                "name": "Cloze"
+                "name": "Basic"
             },
             {
-                "label": "B",
+                "label": "C",
                 "shortcut": "Ctrl+2",
-                "name": "Basic"
+                "name": "Cloze"
             }
         ],
         [
