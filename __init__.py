@@ -16,19 +16,15 @@
     # The more precise the report, the greater the chance i will do something.
 
 """
-Anki2.1 add-on to add quick change buttons to the edit screen.
-
 Adds "Quick Access" buttons to quickly change between frequently used
-note types and decks in the "Add" cards dialog.
+note types and decks in the editor component of the "Add" cards dialog
+and browser.
 """
-
-from aqt import mw
-config = mw.addonManager.getConfig(__name__)
-
 
 from PyQt5.QtWidgets import QHBoxLayout, QPushButton, QShortcut, QVBoxLayout
 from PyQt5.QtGui import QKeySequence
 
+from aqt import mw
 from aqt.modelchooser import ModelChooser
 from aqt.deckchooser import DeckChooser
 from aqt.utils import tooltip
@@ -41,13 +37,20 @@ from anki.utils import isMac
 __version__ = "2.1.1"
 
 
+def load_config(conf):
+    global config
+    config=conf
+
+load_config( mw.addonManager.getConfig(__name__))
+mw.addonManager.setConfigUpdatedAction(__name__,load_config) 
+
 
 
 def init_dc(self, mw, widget, label=True, start=None):
     init_chooser(self, mw, widget, label)
     self.setupDecks()
     addHook('currentModelChanged', self.onModelChange)
-    #geht nicht: hat kein onReset  addHook('reset', self.onReset)
+
 
 def init_mc(self, mw, widget, label=True):
     init_chooser(self, mw, widget, label)
@@ -138,4 +141,3 @@ DeckChooser.setupDecks = wrap(
     lambda dc: setup_buttons(dc, config['deck_button_rows'], "deck", change_deck_to),
     "after")
 DeckChooser.change_deck_to = change_deck_to
- 
