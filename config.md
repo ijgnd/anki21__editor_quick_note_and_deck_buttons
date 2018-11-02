@@ -25,14 +25,14 @@ The buttons you see to quickly change
     "model_button_rows": [
         [
             {
-                "label": "C",
+                "label": "B",
                 "shortcut": "Ctrl+1",
-                "name": "Cloze"
+                "name": "Basic"
             },
             {
-                "label": "B",
+                "label": "C",
                 "shortcut": "Ctrl+2",
-                "name": "Basic"
+                "name": "Cloze"
             }
         ]
     ],
@@ -40,6 +40,7 @@ The buttons you see to quickly change
         [
             {
                 "label": "Deck1",
+                "shortcut": "Ctrl+7",
                 "name": "Deck1"
             },
             {
@@ -58,14 +59,14 @@ The buttons you see to quickly change
     "model_button_rows": [
         [
             {
-                "label": "C",
+                "label": "B",
                 "shortcut": "Ctrl+1",
-                "name": "Cloze"
+                "name": "Basic"
             },
             {
-                "label": "B",
+                "label": "C",
                 "shortcut": "Ctrl+2",
-                "name": "Basic"
+                "name": "Cloze"
             }
         ],
         [
@@ -80,6 +81,7 @@ The buttons you see to quickly change
         [
             {
                 "label": "Deck1",
+                "shortcut": "Ctrl+7",
                 "name": "Deck1"
             },
             {
