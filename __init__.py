@@ -108,8 +108,8 @@ def init_chooser(self, mw, widget, label):
     self.mw = mw
     self.deck = mw.col
     self.label = label
-    self.setContentsMargins(0,0,0,0)  #self.setMargin(0)  #pyqt5
-    self.setSpacing(8)
+    self.setContentsMargins(0,0,0,0)  #self.setMargin(0)  #pyqt5   #inner spacing
+    self.setSpacing(8)    #outer spacing
 
 
 def setup_buttons(chooser, rows, text, do_function):
@@ -132,11 +132,16 @@ def setup_buttons(chooser, rows, text, do_function):
                 pass
             else:
                 s.activated.connect(l)
-            if isMac:
-                b.setStyleSheet("padding: 5px; padding-right: 7px;")
-                b.setToolTip(tt)
-                b.setFocusPolicy(Qt.ClickFocus)
-                b.setAutoDefault(False)
+            #this mac specific function from the version 2.0
+            #doesn't seem to help in 2.1: At least for me it makes
+            #additional buttons for notes in the first line ugly
+            #and doesn't help with my other mac problem (which is
+            #that the spacing it too big)
+            #if isMac:
+            #    b.setStyleSheet("padding: 5px; padding-right: 7px;")
+            #    b.setToolTip(tt)
+            #    b.setFocusPolicy(Qt.ClickFocus)
+            #    b.setAutoDefault(False)
             bhbl.addWidget(b)
             b.clicked.connect(l)
         target.addLayout(bhbl)
