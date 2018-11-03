@@ -26,22 +26,63 @@ from aqt import mw
 from aqt.qt import *
 from aqt.modelchooser import ModelChooser
 from aqt.deckchooser import DeckChooser
-from aqt.utils import tooltip
+from aqt.utils import tooltip, showInfo
 
 from anki.hooks import wrap
 from anki.hooks import runHook, addHook
 from anki.lang import _
 from anki.utils import isMac
 
-__version__ = "2.1.1"
+__version__ = "2.1.2"
 
 
-def load_config(conf):
+def update_config(conf):
+    """try to verify if decks and notes exist"""
     global config
-    config=conf
 
-load_config(mw.addonManager.getConfig(__name__))
-mw.addonManager.setConfigUpdatedAction(__name__,load_config) 
+    try:    # check if database can be queried
+        decks = mw.col.decks.all()
+    except KeyError:
+        config=conf   
+    else:
+        decknames = []
+        for d in decks:
+            decknames.append(d['name'])
+        problems_decks = []
+        for l in conf['deck_button_rows']:
+            for d in l:
+                if not d['name'] in decknames:
+                    problems_decks.append(d['name'])
+
+        modelnames = []  
+        for m in mw.col.models.all():
+            modelnames.append(m['name'])
+
+        problems_notes = []
+        for l in conf['model_button_rows']:
+            for m in l: 
+                if not m['name'] in modelnames:
+                    problems_notes.append(m['name'])
+
+        errormessage="Invalid names in add-on 'Quick note and deck buttons' detected! \n\n"  
+        if problems_decks:
+            errormessage += 'Check the deck "name"s:\n      ' + "\n      ".join(problems_decks) + "\n\n"
+        if problems_notes:
+            errormessage += 'Check the note type "name"s:\n      ' + "\n      ".join(problems_notes) + "\n\n"      
+        errormessage += "If you don't change this and later click on the button for a " + \
+                      "\nnon-existing deck or note you will get strange errors." + \
+                      "\n\nHint: Pay attention to this common source of error:" + \
+                      "\nleading and/or trailing spaces and to not" + \
+                      "\naccidentally use a double space."              
+        if problems_decks or problems_notes:
+            showInfo(errormessage)
+        config=conf          
+
+
+#on startup decks = mw.col.decks returns "None" so I can't check during startup if
+#the settings are valid.
+config = mw.addonManager.getConfig(__name__)
+mw.addonManager.setConfigUpdatedAction(__name__,update_config) 
 
 
 
