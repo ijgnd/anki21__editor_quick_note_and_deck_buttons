@@ -118,6 +118,7 @@ def setup_buttons(chooser, rows, text, do_function):
     for idx, buttons in enumerate(rows):
         target = chooser if idx == 0 else chooser.vbox
         bhbl = QHBoxLayout()
+        bhbl.setContentsMargins(0,0,0,0)  #right top left bottom   #this seems to have no effect in MacOS
         for button_item in buttons:
             b = QPushButton(button_item["label"])
             tt = _("Change {what} to {name}").format(
