@@ -20,82 +20,82 @@ The buttons you see to quickly change
 
 #### example with one row 
 
-```
-{
-    "model_button_rows": [
-        [
-            {
-                "label": "B",
-                "shortcut": "Ctrl+1",
-                "name": "Basic"
-            },
-            {
-                "label": "C",
-                "shortcut": "Ctrl+2",
-                "name": "Cloze"
-            }
+
+    {
+        "deck_button_rows": [
+            [
+                {
+                    "label": "Deck1",
+                    "shortcut": "Ctrl+7",
+                    "name": "Deck1"
+                },
+                {
+                    "label": "my subdeck",
+                    "name": "Deck1::my subdeck"
+                }
+            ]
+        ],
+        "model_button_rows": [
+            [
+                {
+                    "label": "B",
+                    "shortcut": "Ctrl+1",
+                    "name": "Basic"
+                },
+                {
+                    "label": "C",
+                    "shortcut": "Ctrl+2",
+                    "name": "Cloze"
+                }
+            ]
         ]
-    ],
-    "deck_button_rows": [
-        [
-            {
-                "label": "Deck1",
-                "shortcut": "Ctrl+7",
-                "name": "Deck1"
-            },
-            {
-                "label": "my subdeck",
-                "name": "Deck1::my subdeck"
-            }
-        ]
-    ]
-}
-```
+    }
+
 
 #### example with two rows 
 
-```
-{
-    "model_button_rows": [
-        [
-            {
-                "label": "B",
-                "shortcut": "Ctrl+1",
-                "name": "Basic"
-            },
-            {
-                "label": "C",
-                "shortcut": "Ctrl+2",
-                "name": "Cloze"
-            }
+
+    {
+        "deck_button_rows": [
+            [
+                {
+                    "label": "Deck1",
+                    "shortcut": "Ctrl+7",
+                    "name": "Deck1"
+                },
+                {
+                    "label": "my subdeck",
+                    "name": "Deck1::my subdeck"
+                }
+            ],
+            [
+                {
+                    "label": "Deck 2",
+                    "name": "Deck 2"
+                }
+            ]
         ],
-        [
-            {
-                "label": "with reverse",
-                "shortcut": "Ctrl+3",
-                "name": "Basic (and reversed card)"
-            }
+        "model_button_rows": [
+            [
+                {
+                    "label": "B",
+                    "shortcut": "Ctrl+1",
+                    "name": "Basic"
+                },
+                {
+                    "label": "C",
+                    "shortcut": "Ctrl+2",
+                    "name": "Cloze"
+                }
+            ],
+            [
+                {
+                    "label": "with reverse",
+                    "shortcut": "Ctrl+3",
+                    "name": "Basic (and reversed card)"
+                }
+            ]
         ]
-    ],
-    "deck_button_rows": [
-        [
-            {
-                "label": "Deck1",
-                "shortcut": "Ctrl+7",
-                "name": "Deck1"
-            },
-            {
-                "label": "my subdeck",
-                "name": "Deck1::my subdeck"
-            }
-        ],
-        [
-            {
-                "label": "Deck 2",
-                "name": "Deck 2"
-            }
-        ]
-    ]
-}
-```
+    }
+
 
