@@ -20,7 +20,14 @@
 
 
 from aqt import mw
-from aqt.qt import *
+from aqt.qt import (
+    Qt,
+    QHBoxLayout,
+    QVBoxLayout,
+    QPushButton,
+    QShortcut,
+    QKeySequence,
+)
 from aqt.modelchooser import ModelChooser
 from aqt.deckchooser import DeckChooser
 from aqt.utils import tooltip, showInfo
@@ -28,7 +35,6 @@ from aqt import gui_hooks
 
 from anki.hooks import wrap
 from anki.hooks import runHook, addHook
-from anki.lang import _
 from anki.utils import isMac
 
 __version__ = "2.1.4"
@@ -101,32 +107,30 @@ def setup_buttons(chooser, rows, text, do_function):
         target = chooser if idx == 0 else chooser.vbox
         bhbl = QHBoxLayout()
         bhbl.setContentsMargins(0, 0, 0, 0)  # right top left bottom, no effect in MacOS
-        for button_item in buttons:
-            b = QPushButton(button_item["label"])
-            tt = _("Change {what} to {name}").format(
-                what=text, name=button_item["name"])
-            l = lambda _=None, s=chooser, nn=button_item["name"]: do_function(
-                s, nn)
+        for e in buttons:
+            but = QPushButton(e["label"])
+            totip = f"""Change {text} to {e["name"]}"""
+            func = lambda _, s=chooser, nn=e["name"]: do_function(s, nn)
             try:
-                sc = _(button_item["shortcut"])
+                sc = e["shortcut"]
                 s = QShortcut(QKeySequence(sc), chooser.widget)
-                tt += "<br>({})".format(sc)
+                totip += f"<br>({sc})"
             except KeyError:
                 pass
             else:
-                s.activated.connect(l)
+                s.activated.connect(func)
             #this mac specific function from the version 2.0
             #doesn't seem to help in 2.1: At least for me it makes
             #additional buttons for notes in the first line ugly
             #and doesn't help with my other mac problem (which is
             #that the spacing it too big)
             #if isMac:
-            #    b.setStyleSheet("padding: 5px; padding-right: 7px;")
-            b.setToolTip(tt)
-            b.setFocusPolicy(Qt.ClickFocus)  # so that TAB doesn't focus it
-            b.setAutoDefault(False)
-            bhbl.addWidget(b)
-            b.clicked.connect(l)
+            #    but.setStyleSheet("padding: 5px; padding-right: 7px;")
+            but.setToolTip(totip)
+            but.setFocusPolicy(Qt.ClickFocus)  # so that TAB doesn't focus it
+            but.setAutoDefault(False)
+            bhbl.addWidget(but)
+            but.clicked.connect(func)
         target.addLayout(bhbl)
 
 
@@ -140,8 +144,8 @@ def change_model_to(chooser, model_name):
         # When you see this error message, the most likely explanation
         # is that the model names are not set up correctly in the
         # model_button_rows list of dictionaries above.
-        m = ("No note type “{model}”. Check the config of the add-on "
-             "“Quick note and deck buttons (Fork for 2.1)”".format(model=model_name))
+        m = (f"No note type “{model_name}”. Check the config of the add-on "
+              "“Quick note and deck buttons (Fork for 2.1)”")
         tooltip(m)
         return
     cdeck = chooser.deck.decks.current()
@@ -173,8 +177,7 @@ addHook("profileLoaded", onload)
 ModelChooser.__init__ = init_mc
 ModelChooser.setupModels = wrap(
     ModelChooser.setupModels,
-    lambda mc: setup_buttons(
-        mc, gc('model_button_rows', []), "note type", change_model_to),
+    lambda mc: setup_buttons(mc, gc('model_button_rows', []), "note type", change_model_to), 
     "after")
 ModelChooser.change_model_to = change_model_to
 DeckChooser.__init__ = init_dc
