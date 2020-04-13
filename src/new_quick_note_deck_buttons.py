@@ -31,7 +31,7 @@ from anki.hooks import runHook, addHook
 from anki.lang import _
 from anki.utils import isMac
 
-__version__ = "2.1.3"
+__version__ = "2.1.4"
 
 
 def update_config(config):
