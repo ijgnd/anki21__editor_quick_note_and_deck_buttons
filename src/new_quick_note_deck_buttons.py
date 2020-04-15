@@ -32,7 +32,7 @@ from aqt.qt import (
 from aqt.modelchooser import ModelChooser
 from aqt.deckchooser import DeckChooser
 from aqt.addcards import AddCards
-from aqt.utils import tooltip, showInfo
+from aqt.utils import askUser, showInfo, tooltip
 from aqt import gui_hooks
 
 from anki.hooks import wrap
@@ -47,6 +47,52 @@ def gc(arg, fail=False):
     if conf:
         return conf.get(arg, fail)
     return fail
+
+
+def maybe_update_config():
+    conf = mw.addonManager.getConfig(__name__)
+    if not conf:
+        print("error in add-on 'quick note and deck buttons'.")
+        return
+    containsname = False
+    tocheck = {
+        "deck_button_rows": "deck",
+        "model_button_rows": "note type",
+    }
+    for val in tocheck.keys():
+        for rowlist in conf[val]:
+            for dictionary in rowlist:
+                if "name" in dictionary:
+                    containsname = True
+                    break
+    if not containsname:
+        return
+    addonname = mw.addonManager.addonName(__name__.split(".")[0])
+    msg = (f'The add-on "{addonname}" contains a dated config. More recent versions no '
+            'longer contain the value "name". Instead "deck" or "note type" is used. '
+            '<br><br>You can automatically update your config now.<br><br>'
+            'During the auto update no error should occur. But if an error did occur '
+            'your config would be destroyed. So only answer yes if you have a backup '
+            "of your add-on folder with proper backup software or if you don't mind to "
+            "manually recreate it.<br><br>"
+            "If you don't do an auto-update you have to manually change all occurrences "
+            'of "name" in "deck_button_rows" to "deck" and all occurrences of "name" '
+            """to "note type" in the add-on config. Otherwise you'll run into problems."""
+            "<br><br>Auto update config?"
+    )
+    if not askUser(msg):
+        return
+    for val, new in tocheck.items():
+        if val in conf:
+            for rowlist in conf[val]:
+                for dictionary in rowlist:
+                    if dictionary.get("name", False):
+                        if not dictionary.get(new, False):
+                            dictionary[new] = dictionary["name"]
+                        del dictionary["name"]
+    mw.addonManager.writeConfig(__name__, conf)
+addHook('profileLoaded', maybe_update_config)
+
 
 def update_config(config):
     """try to verify if decks and notes exist"""
