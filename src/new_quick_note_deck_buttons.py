@@ -217,8 +217,9 @@ def setup_buttons(chooser, rows, do_function):
             but.setToolTip(totip)
             but.setFocusPolicy(Qt.ClickFocus)  # so that TAB doesn't focus it
             but.setAutoDefault(False)
-            bhbl.addWidget(but)
             but.clicked.connect(func)
+            if not e.get("shortcut only/no button", False):
+                bhbl.addWidget(but)
         target.addLayout(bhbl)
 
 
