@@ -42,6 +42,12 @@ from anki.utils import isMac
 __version__ = "3.0"
 
 
+def gc(arg, fail=False):
+    conf = mw.addonManager.getConfig(__name__)
+    if conf:
+        return conf.get(arg, fail)
+    return fail
+
 def update_config(config):
     """try to verify if decks and notes exist"""
     decknames = mw.col.decks.allNames(dyn=False)
@@ -69,13 +75,6 @@ def update_config(config):
     if problems_decks or problems_notes:
         showInfo(errmsg)
 mw.addonManager.setConfigUpdatedAction(__name__, update_config)
-
-
-def gc(arg, fail=False):
-    conf = mw.addonManager.getConfig(__name__)
-    if conf:
-        return conf.get(arg, fail)
-    return fail
 
 
 def init_dc(self, mw, widget, label=True, start=None):
