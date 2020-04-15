@@ -39,7 +39,9 @@ from anki.hooks import wrap
 from anki.hooks import runHook, addHook
 from anki.utils import isMac
 
+
 __version__ = "3.0"
+addonname = mw.addonManager.addonName(__name__.split(".")[0])
 
 
 def gc(arg, fail=False):
@@ -67,7 +69,6 @@ def maybe_update_config():
                     break
     if not containsname:
         return
-    addonname = mw.addonManager.addonName(__name__.split(".")[0])
     msg = (f'The add-on "{addonname}" contains a dated config. More recent versions no '
             'longer contain the value "name". Instead "deck" or "note type" is used. '
             '<br><br>You can automatically update your config now.<br><br>'
@@ -285,6 +286,20 @@ def deck_changer(dcinstance, deck_name):
     dcinstance._deckName = deck_name
 
 
+def set_focus(addcards, vals):
+    addcards.editor.web.setFocus()
+    focusto = vals.get("focus to field number", 1)
+    try:
+        focusto = int(focusto)   # int(True) => 1
+    except:
+        m = (f'error in config of add-on "{addonname}": "focus to field number" '
+              "can't be transformed into an int. For details see the readme. Aborting ...")
+        tooltip(m)
+    else:
+        focusto = max(focusto, 1)
+        addcards.editor.web.eval(f"""focusField({focusto-1});""")
+
+
 def _change_model_to(mc, vals):
     if not vals.get("note type", ""):
         tooltip("Error in add-on config. Aborting ...")
@@ -295,6 +310,7 @@ def _change_model_to(mc, vals):
         settags(addcards, vals)
     if "deck" in vals:
         deck_changer(addcards.deckChooser, vals["deck"])
+    set_focus(addcards, vals)
 
 
 def change_model_to(mc, vals):
@@ -313,6 +329,7 @@ def _change_deck_to(dc, vals):
         model_changer(addcards.modelChooser, vals)
     if any([v in vals for v in ["tags clear existing", "tags to add", "tags to remove"]]):
         settags(addcards, vals)
+    set_focus(addcards, vals)
 
 
 def change_deck_to(self, vals):
