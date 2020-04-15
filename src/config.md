@@ -13,12 +13,16 @@ The buttons you see to quickly change
     - `label`: the text of the button
     - `deck` or `note type`: the name of the note type or deck to change to. The deck is created if it doesn’t
       exist already.
-    - shortcut (optional): the shortcut key
-- You can also add the following values to each dictionary: `deck` or `note type`,
-`tags clear existing`, `tags to add`, `tags to remove`.
+- You can also add the following values to each dictionary: `shortcut`, `deck` or `note type`,
+`tags clear existing`, `tags to add`, `tags to remove`, `shortcut only/no button`, 
+`focus to field number`
+- `tags clear existing` must be "true" or "false". The default is "false".
+- `tags to add` and `tags to remove` must be lists and look like this ["add_this_one", "and_this_one"].
+- You can also `shortcut only/no button` so that a button is not shown for this option. In this case
+you can only you must set `shortcut`.
+- `focus to field number` must be an integer (1, 2, 3, etc.)
 - Closely follow the examples. Use the correct symbols like brackets, curly braces, etc.
-- The examples from this readme might not be shown properly in the config window of Anki. To see the examples with proper 
-  line breaks have a look at the site on AnkiWeb or on Github.
+- You can also see the following examples [on github](https://github.com/ijgnd/anki21__editor_quick_note_and_deck_buttons/blob/master/src/config.md). There you can also select and copy the config.
 
 #### example with one row 
 
