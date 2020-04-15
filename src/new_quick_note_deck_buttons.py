@@ -232,10 +232,14 @@ def modify_tags(vals, oldtaglist):
     toadd = vals.get("tags to add", False)
     if isinstance(toadd, list):
         tags.update(set(toadd))
+    if isinstance(toadd, str):
+        tags.update(set([toadd]))
 
     remove = vals.get("tags to remove", False)
     if isinstance(remove, list):
         tags -= set(remove)
+    if isinstance(remove, str):
+        tags -= set([remove])
     
     return list(tags)
 
