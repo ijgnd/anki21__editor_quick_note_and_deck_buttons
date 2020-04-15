@@ -27,9 +27,11 @@ from aqt.qt import (
     QPushButton,
     QShortcut,
     QKeySequence,
+    QWidget,
 )
 from aqt.modelchooser import ModelChooser
 from aqt.deckchooser import DeckChooser
+from aqt.addcards import AddCards
 from aqt.utils import tooltip, showInfo
 from aqt import gui_hooks
 
@@ -37,7 +39,7 @@ from anki.hooks import wrap
 from anki.hooks import runHook, addHook
 from anki.utils import isMac
 
-__version__ = "2.1.4"
+__version__ = "3.0"
 
 
 def update_config(config):
@@ -46,14 +48,14 @@ def update_config(config):
     problems_decks = []
     for l in config['deck_button_rows']:
         for d in l:
-            if d['name'] not in decknames:
-                problems_decks.append(d['name'])
+            if d['deck'] not in decknames:
+                problems_decks.append(d['deck'])
     modelnames = mw.col.models.allNames()
     problems_notes = []
     for l in config['model_button_rows']:
         for m in l:
-            if m['name'] not in modelnames:
-                problems_notes.append(m['name'])
+            if m['note type'] not in modelnames:
+                problems_notes.append(m['note type'])
     errmsg = "Invalid names in add-on 'Quick note and deck buttons' detected! \n\n"
     if problems_decks:
         errmsg += 'Check the deck "name"s:\n      ' + "\n      ".join(problems_decks) + "\n\n"
@@ -70,7 +72,10 @@ mw.addonManager.setConfigUpdatedAction(__name__, update_config)
 
 
 def gc(arg, fail=False):
-    return mw.addonManager.getConfig(__name__).get(arg, fail)
+    conf = mw.addonManager.getConfig(__name__)
+    if conf:
+        return conf.get(arg, fail)
+    return fail
 
 
 def init_dc(self, mw, widget, label=True, start=None):
@@ -81,8 +86,18 @@ def init_dc(self, mw, widget, label=True, start=None):
 
 def init_mc(self, mw, widget, label=True):
     init_chooser(self, mw, widget, label)
+    try:
+        topparent = self.parent().parent().parent()
+    except:
+        self.parent_is_addcards = False
+    else:
+        if KeepModels and isinstance(topparent, KeepModels.AddCards):
+            self.parent_is_addcards = True
+        elif isinstance(topparent, AddCards):
+            self.parent_is_addcards = True
+        else:
+            self.parent_is_addcards = False
     self.setupModels()
-    #addHook('reset', self.onReset)
     gui_hooks.state_did_reset.append(self.onReset)
 
 
@@ -100,7 +115,35 @@ def init_chooser(self, mw, widget, label):
     self.setSpacing(8)    # outer spacing
 
 
-def setup_buttons(chooser, rows, text, do_function):
+def tooltip_string(e, isdc):
+    this_val = e.get("deck", "") if isdc else e.get("note type", "")
+    this_string = "deck"
+    other_val = e.get("note type", "") if isdc else e.get("deck", "")
+    other_string = "note type"
+    if not isdc:
+        this_val, this_string, other_val, other_string = other_val, other_string, this_val, this_string
+    other = ""
+    if other_val:
+        other = f'{other_string} to "{other_val}"'
+    tagstring = ""
+    if any([val in e for val in ["tags clear existing", "tags to add", "tags to remove"]]):
+        clear = e.get("tags clear existing", "")
+        add = e.get("tags to add", "")
+        remove = e.get("tags to remove", "")
+        tagstring = f"""<br>tags: clear:{clear}/add:{add}/remove:{remove}"""
+    msg = f'Change {this_string} to "{this_val}"'
+    if any([other, tagstring]):
+        msg += "<br>(" + other + tagstring + ")"
+    return msg
+
+
+def setup_buttons(chooser, rows, do_function):
+    isdc = True if isinstance(chooser, DeckChooser) else False
+    if not isdc:
+        # then it's a model choser
+        # model choser is also used in browser to change note type
+        if not chooser.parent_is_addcards:
+            return
     if rows and isinstance(rows[0], dict):  # backwards compatibility
         rows = [rows]
     for idx, buttons in enumerate(rows):
@@ -109,23 +152,23 @@ def setup_buttons(chooser, rows, text, do_function):
         bhbl.setContentsMargins(0, 0, 0, 0)  # right top left bottom, no effect in MacOS
         for e in buttons:
             but = QPushButton(e["label"])
-            totip = f"""Change {text} to {e["name"]}"""
-            func = lambda _, s=chooser, nn=e["name"]: do_function(s, nn)
+            totip = tooltip_string(e, isdc)
+            func = lambda _=None, s=chooser, d=e: do_function(s, d)
             try:
                 sc = e["shortcut"]
                 s = QShortcut(QKeySequence(sc), chooser.widget)
-                totip += f"<br>({sc})"
+                totip += f"<br><br>({sc})"
             except KeyError:
                 pass
             else:
                 s.activated.connect(func)
-            #this mac specific function from the version 2.0
-            #doesn't seem to help in 2.1: At least for me it makes
-            #additional buttons for notes in the first line ugly
-            #and doesn't help with my other mac problem (which is
-            #that the spacing it too big)
-            #if isMac:
-            #    but.setStyleSheet("padding: 5px; padding-right: 7px;")
+            # this mac specific function from the version 2.0
+            # doesn't seem to help in 2.1: At least for me it makes
+            # additional buttons for notes in the first line ugly
+            # and doesn't help with my other mac problem (which is
+            # that the spacing it too big)
+            # if isMac:
+            #     but.setStyleSheet("padding: 5px; padding-right: 7px;")
             but.setToolTip(totip)
             but.setFocusPolicy(Qt.ClickFocus)  # so that TAB doesn't focus it
             but.setAutoDefault(False)
@@ -134,12 +177,39 @@ def setup_buttons(chooser, rows, text, do_function):
         target.addLayout(bhbl)
 
 
-def change_model_to(chooser, model_name):
+def modify_tags(vals, oldtaglist):
+    clear = vals.get("tags clear existing", False)
+    if isinstance(clear, bool) and clear:
+        tags = set()
+    else:
+        tags = set(oldtaglist)
+
+    toadd = vals.get("tags to add", False)
+    if isinstance(toadd, list):
+        tags.update(set(toadd))
+
+    remove = vals.get("tags to remove", False)
+    if isinstance(remove, list):
+        tags -= set(remove)
+    
+    return list(tags)
+
+
+def settags(addinstance, vals):
+    e = addinstance.editor
+    e.saveTags()
+    e.note.tags = modify_tags(vals, e.note.tags.copy())
+    e.note.flush()
+    e.tags.setText(e.note.stringTags().strip())
+
+
+def model_changer(mc, vals):
     global KeepModels
+    model_name = vals.get("note type")
     # Mostly just a copy and paste from the bottom of onModelChange()
-    m = chooser.deck.models.byName(model_name)
+    m = mc.deck.models.byName(model_name)
     try:
-        chooser.deck.conf['curModel'] = m['id']
+        mc.deck.conf['curModel'] = m['id']
     except TypeError:
         # When you see this error message, the most likely explanation
         # is that the model names are not set up correctly in the
@@ -148,21 +218,56 @@ def change_model_to(chooser, model_name):
               "“Quick note and deck buttons (Fork for 2.1)”")
         tooltip(m)
         return
-    cdeck = chooser.deck.decks.current()
+    cdeck = mc.deck.decks.current()
     cdeck['mid'] = m['id']
-    chooser.deck.decks.save(cdeck)
+    mc.deck.decks.save(cdeck)
     if not KeepModels:
         runHook("currentModelChanged")
-        chooser.mw.reset()
+        mc.mw.reset()
     else:  # from Keep Models Add-on
-        addcards = chooser.widget.parent()
+        addcards = mc.widget.parent()
         addcards.onModelChange()
-        chooser.updateModels()
+        mc.updateModels()
 
 
-def change_deck_to(self, deck_name):
-    self.deck.setText(deck_name)
-    self._deckName = deck_name
+def deck_changer(dcinstance, deck_name):
+    dcinstance.deck.setText(deck_name)
+    dcinstance._deckName = deck_name
+
+
+def _change_model_to(mc, vals):
+    if not vals.get("note type", ""):
+        tooltip("Error in add-on config. Aborting ...")
+        return
+    model_changer(mc, vals)
+    addcards = mc.parent().parent().parent()
+    if any([v in vals for v in ["tags clear existing", "tags to add", "tags to remove"]]):
+        settags(addcards, vals)
+    if "deck" in vals:
+        deck_changer(addcards.deckChooser, vals["deck"])
+
+
+def change_model_to(mc, vals):
+    addcards = mc.widget.parent()
+    addcards.editor.saveNow(lambda m=mc, v=vals: _change_model_to(m, v))
+
+
+def _change_deck_to(dc, vals):
+    deck_name = vals.get("deck")
+    if not deck_name:
+        tooltip("Error in add-on config. Aborting ...")
+        return
+    deck_changer(dc, deck_name)
+    addcards = dc.parent().parent().parent()
+    if "note type" in vals:
+        model_changer(addcards.modelChooser, vals)
+    if any([v in vals for v in ["tags clear existing", "tags to add", "tags to remove"]]):
+        settags(addcards, vals)
+
+
+def change_deck_to(self, vals):
+    addcards = self.parent().parent().parent()
+    addcards.editor.saveNow(lambda d=self, v=vals: _change_deck_to(d, v))
 
 
 def onload():
@@ -177,12 +282,33 @@ addHook("profileLoaded", onload)
 ModelChooser.__init__ = init_mc
 ModelChooser.setupModels = wrap(
     ModelChooser.setupModels,
-    lambda mc: setup_buttons(mc, gc('model_button_rows', []), "note type", change_model_to), 
+    lambda mc: setup_buttons(mc, gc('model_button_rows', []), change_model_to), 
     "after")
 ModelChooser.change_model_to = change_model_to
 DeckChooser.__init__ = init_dc
 DeckChooser.setupDecks = wrap(
     DeckChooser.setupDecks,
-    lambda dc: setup_buttons(dc, gc('deck_button_rows', []), "deck", change_deck_to),
+    lambda dc: setup_buttons(dc, gc('deck_button_rows', []), change_deck_to),
     "after")
 DeckChooser.change_deck_to = change_deck_to
+
+
+
+
+"""
+# discarded/unused idea
+class MyModelChooser(ModelChooser):
+    def __init__(self, parent, mw, widget, label=True):
+        super().__init__(mw, widget)
+
+
+class MyDeckChooser(DeckChooser):
+    def __init__(self, parent, mw, widget: QWidget, label=True, start=None):
+        super().__init__(mw, widget)
+
+
+def setupChoosers(self):
+    self.modelChooser = MyModelChooser(self, self.mw, self.form.modelArea)
+    self.deckChooser = MyDeckChooser(self, self.mw, self.form.deckArea)
+AddCards.setupChoosers = setupChoosers
+"""

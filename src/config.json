@@ -4,17 +4,21 @@
             {
                 "label": "Deck1",
                 "shortcut": "Ctrl+7",
-                "name": "Deck1"
+                "deck": "Deck1",
+                "note type": "Basic",
+                "tags clear existing": true,
+                "tags to add": ["example"],
+                "tags to remove": ["remove_this"]
             },
             {
                 "label": "my subdeck",
-                "name": "Deck1::my subdeck"
+                "deck": "Deck1::my subdeck"
             }
         ],
         [
             {
                 "label": "Deck 2",
-                "name": "Deck 2"
+                "deck": "Deck 2"
             }
         ]
     ],
@@ -23,19 +27,23 @@
             {
                 "label": "B",
                 "shortcut": "Ctrl+1",
-                "name": "Basic"
+                "note type": "Basic",
+                "deck": "Deck1",
+                "tags clear existing": false,
+                "tags to add": ["example2"],
+                "tags to remove": ["remove_this2"]
             },
             {
                 "label": "C",
                 "shortcut": "Ctrl+2",
-                "name": "Cloze"
+                "note type": "Cloze"
             }
         ],
         [
             {
                 "label": "with reverse",
                 "shortcut": "Ctrl+3",
-                "name": "Basic (and reversed card)"
+                "note type": "Basic (and reversed card)"
             }
         ]
     ]
