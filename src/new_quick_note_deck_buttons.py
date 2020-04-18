@@ -19,6 +19,10 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
+from anki.hooks import wrap
+from anki.hooks import runHook, addHook
+from anki.utils import isMac
+
 from aqt import mw
 from aqt.qt import (
     Qt,
@@ -34,10 +38,6 @@ from aqt.deckchooser import DeckChooser
 from aqt.addcards import AddCards
 from aqt.utils import askUser, showInfo, tooltip
 from aqt import gui_hooks
-
-from anki.hooks import wrap
-from anki.hooks import runHook, addHook
-from anki.utils import isMac
 
 
 __version__ = "3.0"
