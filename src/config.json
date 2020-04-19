@@ -7,8 +7,7 @@
                 "deck": "Deck1",
                 "note type": "Basic",
                 "tags clear existing": true,
-                "tags to add": ["example"],
-                "tags to remove": ["remove_this"]
+                "tags to add": ["adjust_the_config_of_the_addon_Quick_note_and_deck_buttons"]
             },
             {
                 "label": "my subdeck",
@@ -30,8 +29,8 @@
                 "note type": "Basic",
                 "deck": "Deck1",
                 "tags clear existing": false,
-                "tags to add": ["example2"],
-                "tags to remove": ["remove_this2"]
+                "tags to add": ["really_adjust_the_config_of_the_addon_Quick_note_and_deck_buttons"],
+                "tags to remove": ["remove_this"]
             },
             {
                 "label": "C",
