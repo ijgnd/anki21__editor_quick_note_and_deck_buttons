@@ -51,7 +51,7 @@ def gc(arg, fail=False):
     return fail
 
 
-def maybe_update_config():
+def on_startup_maybe_update_config_to_202004():
     conf = mw.addonManager.getConfig(__name__)
     if not conf:
         print("error in add-on 'quick note and deck buttons'.")
@@ -92,24 +92,54 @@ def maybe_update_config():
                             dictionary[new] = dictionary["name"]
                         del dictionary["name"]
     mw.addonManager.writeConfig(__name__, conf)
-addHook('profileLoaded', maybe_update_config)
+addHook('profileLoaded', on_startup_maybe_update_config_to_202004)
 
 
-def update_config(config):
-    """try to verify if decks and notes exist"""
-    decknames = mw.col.decks.allNames(dyn=False)
-    problems_decks = []
-    for l in config['deck_button_rows']:
-        for d in l:
-            if d['deck'] not in decknames:
-                problems_decks.append(d['deck'])
-    modelnames = mw.col.models.allNames()
-    problems_notes = []
-    for l in config['model_button_rows']:
-        for m in l:
-            if m['note type'] not in modelnames:
-                problems_notes.append(m['note type'])
-    errmsg = "Invalid names in add-on 'Quick note and deck buttons' detected! \n\n"
+general_warning = ("<br>Check the readme or reset your config. If you don't adjust the config "
+                   "you will run into strange errors.")
+
+
+def check_entry(config, relevantval, neededval, existing):
+    has_problems = []
+    for row in config[relevantval]:
+        if not isinstance(row, list):
+            showInfo((f'Illegal setting in config for the addon "{addonname}".<br>'
+                      f'"{relevantval}" must contain json-arrays (=lists) of values for each row.'
+                      f'{general_warning}'))
+            return
+        for dct in row:
+            if not isinstance(dct, dict):
+                showInfo((f'Illegal setting in config for the addon "{addonname}".<br>'
+                        f'"{relevantval}" must contain json-arrays (=lists) of values for '
+                         'each row where each array value that defines a button is a json-object '
+                         '(=dict, associative array). '
+                        f'Your setting "{dct}" is not a json-object.'  
+                        f'{general_warning}'))
+                return
+            if not neededval in dct:
+                showInfo((f'Illegal setting in config for the addon "{addonname}".<br>Each '
+                          f'entry in "{relevantval}" must contain a "{neededval}" value.'
+                          f'{general_warning}'))
+                return
+            if dct[neededval] not in existing:
+                has_problems.append(dct[neededval])
+    return has_problems
+
+
+def on_user_changed_config(config):
+    for val in config.keys():
+        if val not in ["deck_button_rows", "model_button_rows"]:
+            showInfo(('Illegal setting in config for the addon "{addonname}"<br>. If you '
+                      "don't change it you'll run into errors."))
+            return
+    problems_decks = check_entry(config, "deck_button_rows", "deck", mw.col.decks.allNames(dyn=False))
+    if problems_decks is None:
+        return
+    problems_notes = check_entry(config, 'model_button_rows', "note type", mw.col.models.allNames())
+    if problems_notes is None:
+        return
+
+    errmsg = f"Invalid names in add-on '{addonname}' detected! \n\n"
     if problems_decks:
         errmsg += 'Check the deck "name"s:\n      ' + "\n      ".join(problems_decks) + "\n\n"
     if problems_notes:
@@ -121,7 +151,7 @@ def update_config(config):
                "\naccidentally use a double space.")
     if problems_decks or problems_notes:
         showInfo(errmsg)
-mw.addonManager.setConfigUpdatedAction(__name__, update_config)
+mw.addonManager.setConfigUpdatedAction(__name__, on_user_changed_config)
 
 
 def init_dc(self, mw, widget, label=True, start=None):
