@@ -22,7 +22,10 @@ The buttons you see to quickly change
 you can only you must set `shortcut`.
 - `focus to field number` must be an integer (1, 2, 3, etc.)
 - Closely follow the examples. Use the correct symbols like brackets, curly braces, etc.
-- You can also see the following examples [on github](https://github.com/ijgnd/anki21__editor_quick_note_and_deck_buttons/blob/master/src/config.md). There you can also select and copy the config.
+- Before Anki 2.1.24 you can't select text to copy it from the readme sidebar of this add-on
+config dialog. If you use an  older Anki version you can view the following examples 
+also [on this website](https://github.com/ijgnd/anki21__editor_quick_note_and_deck_buttons/blob/master/src/config.md) 
+from where you can copy them.
 
 #### example with one row 
 
@@ -46,12 +49,12 @@ you can only you must set `shortcut`.
                 {
                     "label": "B",
                     "shortcut": "Ctrl+1",
-                    "deck": "Basic"
+                    "note type": "Basic"
                 },
                 {
                     "label": "C",
                     "shortcut": "Ctrl+2",
-                    "decknote type": "Cloze"
+                    "note type": "Cloze"
                 }
             ]
         ]
@@ -67,17 +70,17 @@ you can only you must set `shortcut`.
                 {
                     "label": "Deck1",
                     "shortcut": "Ctrl+7",
-                    "note type": "Deck1"
+                    "deck": "Deck1"
                 },
                 {
                     "label": "my subdeck",
-                    "note type": "Deck1::my subdeck"
+                    "deck": "Deck1::my subdeck"
                 }
             ],
             [
                 {
                     "label": "Deck 2",
-                    "note type": "Deck 2"
+                    "deck": "Deck 2"
                 }
             ]
         ],
@@ -117,8 +120,8 @@ you can only you must set `shortcut`.
                     "deck": "Deck1",
                     "note type": "Basic",
                     "tags clear existing": true,
-                    "tags to add": ["this_tag_was_added", "also_this"],
-                    "tags to remove": ["this_tag_will_be_removed_if_present", "this_too"]
+                    "tags to add": ["quick_note_buttons_addon_sample_tag_for_deck"],
+                    "tags to remove": []
                 },
                 {
                     "label": "my subdeck",
@@ -134,13 +137,13 @@ you can only you must set `shortcut`.
                     "note type": "Basic",
                     "deck": "Deck1",
                     "tags clear existing": false,
-                    "tags to add": ["this_is_added", "this_too"],
+                    "tags to add": ["quick_note_buttons_addon_sample_tag_models", "quick_note_buttons_addon_models_this_too"],
                     "tags to remove": ["if_present_this_tag_will_be_removed", "also_this_one"]
                 },
                 {
                     "label": "C",
                     "shortcut": "Ctrl+2",
-                    "decknote type": "Cloze"
+                    "note type": "Cloze"
                 }
             ]
         ]
