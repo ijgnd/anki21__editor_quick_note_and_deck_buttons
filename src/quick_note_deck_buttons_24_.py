@@ -246,7 +246,6 @@ def tooltip_string(e, isdc):
 
 
 def setup_buttons(chooser, rows, do_function):
-    print(f"in setup_buttons and chooser is {chooser}")
     isdc = True if isinstance(chooser, DeckChooser) else False
     if not isdc:
         # then it's a model choser
