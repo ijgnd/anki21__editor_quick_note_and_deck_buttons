@@ -18,8 +18,7 @@ The buttons you see to quickly change
 `focus to field number`
 - `tags clear existing` must be "true" or "false". The default is "false".
 - `tags to add` and `tags to remove` must be lists and look like this ["add_this_one", "and_this_one"].
-- You can also `shortcut only/no button` so that a button is not shown for this option. In this case
-you can only you must set `shortcut`.
+- You can also set `shortcut only/no button` to "true" so that a button is not shown for this option. In this case the value for `label` will be ignored.
 - `focus to field number` must be an integer (1, 2, 3, etc.)
 - Closely follow the examples. Use the correct symbols like brackets, curly braces, etc.
 - Before Anki 2.1.24 you can't select text to copy it from the readme sidebar of this add-on

@@ -227,7 +227,7 @@ def setup_buttons(chooser, rows, do_function):
         bhbl = QHBoxLayout()
         bhbl.setContentsMargins(0, 0, 0, 0)  # right top left bottom, no effect in MacOS
         for e in buttons:
-            but = QPushButton(e["label"])
+            but = QPushButton(e.get("label", ""))
             totip = tooltip_string(e, isdc)
             func = lambda _=None, s=chooser, d=e: do_function(s, d)
             try:
