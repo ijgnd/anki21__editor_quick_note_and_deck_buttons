@@ -32,6 +32,7 @@ from aqt.qt import (
     QKeySequence,
     QWidget,
 )
+from PyQt5.Qt import QSizePolicy 
 
 from aqt import gui_hooks
 from aqt.addcards import AddCards
@@ -129,11 +130,6 @@ def check_entry(config, relevantval, neededval, existing):
 
 
 def on_user_changed_config(config):
-    for val in config.keys():
-        if val not in ["deck_button_rows", "model_button_rows"]:
-            showInfo(('Illegal setting in config for the addon "{addonname}"<br>. If you '
-                      "don't change it you'll run into errors."))
-            return
     problems_decks = check_entry(config, "deck_button_rows", "deck", mw.col.decks.allNames(dyn=False))
     if problems_decks is None:
         return
@@ -395,6 +391,20 @@ def _change_deck_to(dc, vals):
 
 def change_deck_to(self, vals):
     self.addcards.editor.saveNow(lambda d=self, v=vals: _change_deck_to(d, v))
+
+
+def set_proportion(self):
+    deckmodel = gc("deck__model__proportion")
+    if not deckmodel:
+        return
+    sizePolicy = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
+    sizePolicy.setHorizontalStretch(deckmodel[1])
+    self.form.modelArea.setSizePolicy(sizePolicy)
+
+    sizePolicy = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
+    sizePolicy.setHorizontalStretch(deckmodel[0])
+    self.form.deckArea.setSizePolicy(sizePolicy)
+gui_hooks.add_cards_did_init.append(set_proportion)
 
 
 def onload():

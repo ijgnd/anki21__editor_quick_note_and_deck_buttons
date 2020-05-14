@@ -5,6 +5,12 @@ The buttons you see to quickly change
 - ... the note type are defined by "model_button_rows"
 - ... the deck are defined by "deck_button_rows"
 
+"deck__model__proportion" allows you influence the relative width of the deck area and note type 
+area. A higher number means that the affected element should get relatively bigger. E.g. 
+`"deck__model__proportion": [9,1],` means that the deck area will be much wider *if the number of* 
+*visible buttons allows this*. It does *not* mean that the deck area will be exactly nine times as 
+wide as the model area.
+
 #### Details
 
 - `model_button_rows` and `deck_button_rows` each contain a list of lists. Each nested list represents one row.
