@@ -1,0 +1,91 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "title": "Quick note and deck buttons (Fork for 2.1)",
+    "properties": {
+        "deck__model__proportion": {
+            "type": "array",
+            "items": {
+                "type": "number"
+            }
+        },
+        "deck_button_rows": {
+            "type": "array",
+            "items": [{
+                "type": "array",
+                "items": [{
+                    "type": "object",
+                    "properties": {
+                        "label": {
+                            "type": "string"
+                        },
+                        "shortcut": {
+                            "type": "string"
+                        },
+                        "deck": {
+                            "type": "string"
+                        },
+                        "note type": {
+                            "type": "string"
+                        },
+                        "tags clear existing": {
+                            "type": "boolean"
+                        },
+                        "tags to add": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "tags to remove": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "additionalProperties": false
+                }]
+            }]
+        },
+        "model_button_rows": {
+            "type": "array",
+            "items": [{
+                "type": "array",
+                "items": [{
+                    "type": "object",
+                    "properties": {
+                        "label": {
+                            "type": "string"
+                        },
+                        "shortcut": {
+                            "type": "string"
+                        },
+                        "deck": {
+                            "type": "string"
+                        },
+                        "note type": {
+                            "type": "string"
+                        },
+                        "tags clear existing": {
+                            "type": "boolean"
+                        },
+                        "tags to add": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "tags to remove": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "additionalProperties": false
+                }]
+            }]
+        }
+    }
+}
