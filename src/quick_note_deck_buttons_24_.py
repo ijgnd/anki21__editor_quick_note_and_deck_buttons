@@ -414,9 +414,12 @@ def set_proportion(self):
     self.form.deckArea.setSizePolicy(sizePolicy)
 gui_hooks.add_cards_did_init.append(set_proportion)
 
-
+already_loaded = False
 def onload():
+    global already_loaded
     global KeepModels
+    if already_loaded:
+        return
     try:
         ModelChooser = __import__("424778276").modelChooser.ModelChooser
         ModelChooser.__init__ = init_mc_keepmodels
@@ -437,4 +440,6 @@ def onload():
         lambda dc: setup_buttons(dc, gc('deck_button_rows', []), change_deck_to),
         "after")
     DeckChooser.change_deck_to = change_deck_to
+    
+    already_loaded = True
 gui_hooks.profile_did_open.append(onload)
