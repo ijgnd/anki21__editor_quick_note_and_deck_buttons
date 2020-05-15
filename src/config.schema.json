@@ -3,6 +3,18 @@
     "type": "object",
     "title": "Quick note and deck buttons (Fork for 2.1)",
     "properties": {
+        "Disable for these profiles": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "Enable only for these profiles": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
         "deck__model__proportion": {
             "type": "array",
             "items": {

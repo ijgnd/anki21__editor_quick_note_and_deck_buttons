@@ -11,6 +11,13 @@ area. A higher number means that the affected element should get relatively bigg
 *visible buttons allows this*. It does *not* mean that the deck area will be exactly nine times as 
 wide as the model area.
 
+If you work with multiple profiles you can enable or disable this add-on for selected profiles
+with `"Disable for these profiles"` and `"Enable only for these profiles"`.
+If `"Enable only for these profiles"` is an empty list this add-on will be enabled for all profiles
+except for those set under `"Disable for these profiles"`. If you set a name in 
+`"Enable only for these profiles"` this add-on will only be active in this profile. This setting
+will override an entry in `"Disable for these profiles"`.
+
 #### Details
 
 - `model_button_rows` and `deck_button_rows` each contain a list of lists. Each nested list represents one row.

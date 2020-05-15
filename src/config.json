@@ -1,4 +1,6 @@
 {
+    "Disable for these profiles": [],
+    "Enable only for these profiles": [],
     "deck__model__proportion": [1,1],
     "deck_button_rows": [
         [

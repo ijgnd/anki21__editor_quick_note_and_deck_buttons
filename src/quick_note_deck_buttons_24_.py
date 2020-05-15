@@ -248,6 +248,14 @@ def setup_buttons(chooser, rows, do_function):
         # model choser is also used in browser to change note type
         if not chooser.addcards:
             return
+    onlyusefor = gc("Enable only for these profiles")
+    if onlyusefor:
+        if mw.pm.name not in onlyusefor:
+            return
+    dontusefor = gc("Disable for these profiles")
+    if dontusefor:
+        if mw.pm.name in dontusefor:
+            return
     if rows and isinstance(rows[0], dict):  # backwards compatibility
         rows = [rows]
     for idx, buttons in enumerate(rows):
