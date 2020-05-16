@@ -346,7 +346,7 @@ def model_changer(mc, vals):
         gui_hooks.current_note_type_did_change(m)
         mc.parent.onModelChange()
         mc.updateModels()
-        mc.parent.setAndFocusNote(mc.parent.note)
+        mc.parent.setAndFocusNote(mc.parent.editor.note)
 
 
 def deck_changer(dcinstance, deck_name):
