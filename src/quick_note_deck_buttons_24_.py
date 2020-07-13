@@ -316,7 +316,9 @@ def settags(addinstance, vals):
     e = addinstance.editor
     e.saveTags()
     e.note.tags = modify_tags(vals, e.note.tags.copy())
-    e.note.flush()
+    if not e.addMode:
+        e.note.flush()
+        e.mw.requireReset()
     e.tags.setText(e.note.stringTags().strip())
 
 
