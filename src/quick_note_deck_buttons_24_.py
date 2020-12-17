@@ -176,7 +176,11 @@ def init_dc(self, mw, widget, label=True, start=None):
     gui_hooks.current_note_type_did_change.append(self.onModelChangeNew)
 
 
-def init_mc_keepmodels(self, parent, mw, widget, label=True):
+def init_mc_keepmodels(self, parent, mw, widget, label=True, on_activated=None):
+    if on_activated:
+        self.on_activated = on_activated
+    else:
+        self.on_activated = self.onModelChange
     init_chooser(self, mw, widget, label)
     self.parent = parent
     if isinstance(self.parent, AddCards):
@@ -186,7 +190,11 @@ def init_mc_keepmodels(self, parent, mw, widget, label=True):
     init_mc_helper(self, mw, widget, label)
 
 
-def init_mc(self, mw, widget, label=True):
+def init_mc(self, mw, widget, label=True, on_activated=None):
+    if on_activated:
+        self.on_activated = on_activated
+    else:
+        self.on_activated = self.onModelChange
     init_chooser(self, mw, widget, label)
     try:
         topparent = self.parent().parent().parent()
